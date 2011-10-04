@@ -84,7 +84,7 @@ class String
     String replace( const String& match, const String& replace );
     friend String operator + ( String lhs, const String &rhs );
 	
-	char* c_str() { return _buffer; }
+	const char* c_str() { return _buffer; }
 
   protected:
     char *_buffer;	     // the actual char array

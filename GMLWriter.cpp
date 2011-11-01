@@ -2,8 +2,8 @@
  *  gml_writer.h
  *  
  *
- *  Created by base on 30/09/11.
- *  Copyright 2011 __MyCompanyName__. All rights reserved.
+ *  Reading and writing GML to either the
+ *  Serial port or an SD card
  *
  */
 
@@ -20,9 +20,10 @@ GMLWriter::~GMLWriter() {
   file.close();
 }
 
-void GMLWriter::init()
+int GMLWriter::init()
 {
   if (!sd.init(SPI_FULL_SPEED, 10)) sd.initErrorHalt();
+  return -1;
 
   // first check that we don't already have stuff on the card - critical
   int n = 1;
@@ -44,7 +45,9 @@ void GMLWriter::init()
 
   if(!file.open(s.c_str(), O_WRITE | O_CREAT )) {
     sd.errorHalt("can't create new file");
+    return -1;
   }
+  return 1;
 }
 
 void GMLWriter::beginStroke() {
@@ -62,11 +65,11 @@ void GMLWriter::beginDrawing() {
   file.write(tagBegin);
 }
 
-void GMLWriter::endDrawing() {
+bool GMLWriter::endDrawing() {
 
   file.write(tagEnd);
 
-  file.close();
+  return file.close();
 }
 
 void GMLWriter::addPoint( float x, float y, float z ) {	

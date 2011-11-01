@@ -20,10 +20,10 @@ public:
   GMLWriter(); 
   ~GMLWriter();
 
-  void init();
+  int init();
 
   void beginDrawing();
-  void endDrawing();
+  bool endDrawing();
 
   void beginStroke();
   void endStroke();

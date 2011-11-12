@@ -9,11 +9,11 @@
 
 #include "GMLWriter.h"
 
-const char GMLWriter::tagBegin[38] = "<gml spec='1.0'><tag><drawing>";
+const char GMLWriter::tagBegin[38] = "<gml spec='1.0'> <client><name>GML Field Recorder</name></client><tag><drawing>";
 const char GMLWriter::tagEnd[23] = "</drawing></tag></gml>";
 
 GMLWriter::GMLWriter() {
-
+  
 }
 
 GMLWriter::~GMLWriter() {
@@ -22,8 +22,11 @@ GMLWriter::~GMLWriter() {
 
 int GMLWriter::init()
 {
-  if (!sd.init(SPI_FULL_SPEED, 10)) sd.initErrorHalt();
-  return -1;
+ 
+  if (!sd.init(SPI_FULL_SPEED, 20)) {
+    sd.initErrorHalt();
+    return -1;
+  }
 
   // first check that we don't already have stuff on the card - critical
   int n = 1;
@@ -72,7 +75,7 @@ bool GMLWriter::endDrawing() {
   return file.close();
 }
 
-void GMLWriter::addPoint( float x, float y, float z ) {	
+void GMLWriter::addPoint( float x, float y, float time ) {	
   String s;
   char fp[10];
   s += "<pt><x>";
@@ -86,12 +89,12 @@ void GMLWriter::addPoint( float x, float y, float z ) {
   floatToString(&fp[0], y, 5);
   Serial.print(fp);
   s += fp;
-  s +=  "</y><z>";
+  s +=  "</y><t>";
   //snprintf(&fp[0], 5, "%f", z);
-  floatToString(&fp[0], z, 5);
+  floatToString(&fp[0], time, 5);
   Serial.print(fp);
   s += fp;
-  s +=  "</z></pt>";
+  s +=  "</t></pt>";
 
   file.write(s.c_str());
 }
